@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--mapper文件中整合 Mybatis和mapper层-->
+
+    <!-- 1.关联数据库文件 -->
+    <context:property-placeholder location="classpath:db.properties"/>
+
+    <!--2.连接池   dbcp、c3p0、druid等-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="username" value="${jdbc.username}"/>
+    </bean>
+
+    <!--3.sqlSessionFactory  sqlSession工厂-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+
+    <!--4.配置Dao接口扫描包,自动配置动态的将Dao注册给spring容器-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入sqlSessionFactory     只有一个数据库连接池时,可以不用配置。会自动装配sqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--设置需要扫描的包            扫描多个包用","隔开-->
+        <property name="basePackage" value="com.ykq.crm.settings.mapper,
+                                            com.ykq.crm.workbench.mapper"/>
+    </bean>
+
+    <!--5.连接池添加声明式事务-->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--  添加事务管理切面  -->
+    <tx:advice id="advice">
+        <tx:attributes>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--  配置切面和切入点的织入  -->
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution(* com.ykq.crm.*.service.*.*(..))"/>
+        <aop:advisor pointcut-ref="pointcut" advice-ref="advice"/>
+    </aop:config>
+</beans>
