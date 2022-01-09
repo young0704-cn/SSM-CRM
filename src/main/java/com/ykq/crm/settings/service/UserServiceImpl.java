@@ -7,6 +7,8 @@ import com.ykq.crm.utils.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -37,5 +39,12 @@ public class UserServiceImpl implements UserService{
         }
 
         return u;
+    }
+
+    @Override
+    public List<User> getAll() {
+        List<User> userList;
+        userList = mapper.getAll();
+        return userList;
     }
 }

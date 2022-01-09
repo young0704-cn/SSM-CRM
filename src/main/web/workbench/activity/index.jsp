@@ -46,7 +46,7 @@ pageEncoding="UTF-8"%>
 
 			//从后端获取资源，获取到的用户信息加入到下拉列表
 			$.ajax({
-				url:"activity/getUserList.do",
+				url:"activity/getUserList.action",
 				data:{
 
 				},
@@ -75,7 +75,7 @@ pageEncoding="UTF-8"%>
 			var cost=$("#create-cost").val();
 			var description=$("#create-describe").val();
 			$.ajax({
-				url:"activity/save.do",
+				url:"activity/save.action",
 				data: {
 					"owner":$.trim(owner),"name":$.trim(name),"startDate":$.trim(startDate), "endDate":$.trim(endDate),
 					"cost":$.trim(cost), "description":$.trim(description)
@@ -142,7 +142,7 @@ pageEncoding="UTF-8"%>
 					}
 
 					$.ajax({
-						url:"activity/delete.do",
+						url:"activity/delete.action",
 						data:parm,
 						dataType:"json",
 						type:"post",
@@ -152,7 +152,7 @@ pageEncoding="UTF-8"%>
                             */
 							if (result_data.success){
 								alert("删除成功")
-								pageList(1,3)
+								pageList(1,4)
 							}else {
 								alert(result_data.msg)
 							}
@@ -172,7 +172,7 @@ pageEncoding="UTF-8"%>
 				alert("请选择一条需要更改的信息")
 			}else {
 				$.ajax({
-					url:"activity/edit.do",
+					url:"activity/edit.action",
 					data:{
 						"id":$xz.val()
 					},
@@ -204,7 +204,7 @@ pageEncoding="UTF-8"%>
 		$("#updatebtn").click(function () {
 			if (confirm("确定更新？")){
 				$.ajax({
-					url:"activity/update.do",
+					url:"activity/update.action",
 					dataType:"json",
 					type:"post",
 					data:{
@@ -233,7 +233,7 @@ pageEncoding="UTF-8"%>
 			}
 		})
 
-		pageList(1,3);
+		pageList(1,4);
 	});
 			/*分页查询功能实现分析
                 分页查询必要的两个参数 pageNo页码	pageSize每页的记录条数
@@ -246,7 +246,7 @@ pageEncoding="UTF-8"%>
 		$("#getActOwner").val($.trim($("#hidden-owner").val()));
 		$("#getActName").val($.trim($("#hidden-name").val()));
 		$.ajax({
-			url:"activity/pageList.do",
+			url:"activity/pageList.action",
 			data:{
 				"pageNo":pageNo,
 				"pageSize":pageSize,
@@ -281,7 +281,7 @@ pageEncoding="UTF-8"%>
 				$.each(result_data.dataList,function (i,n){
 					html+='<tr class="active">';
 					html+='<td><input type="checkbox" name="xz" value="'+n.id+'"/></td>'
-					html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'activity/detail.do?id='+n.id+'\';">'+n.name+'</a></td>'
+					html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'activity/detail.action?id='+n.id+'\';">'+n.name+'</a></td>'
 					html+='<td>'+n.owner+'</td>'
 					html+='<td>'+n.startDate+'</td>'
 					html+='<td>'+n.endDate+'</td></tr>'

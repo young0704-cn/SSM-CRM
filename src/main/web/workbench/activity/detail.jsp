@@ -6,9 +6,12 @@
 <head>
 	<base href="<%=basePath%>">
 <meta charset="UTF-8">
-<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+    <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
 
@@ -58,10 +61,101 @@
             $(this).children("div").children("div").hide();
         })
 
+        $("#detail-sc-btn").click(function () {
+            $.ajax({
+                url:"activity/delete.action",
+                data:{
+                    "ids":"${activity.id}"
+                },
+                dataType:"json",
+                type:"post",
+                success:function (result_data) {
+                    /*
+                        {"success":true/false,"msg":String s}
+                    */
+                    if (result_data.success){
+                        alert("删除成功")
+                    }else {
+                        alert(result_data.msg)
+                    }
+                    window.location.href="workbench/activity/index.jsp"
+                }
+            })
+        })
+
+        $("#detail-gx-btn").click(function () {
+            if (confirm("确定更新？")){
+                $.ajax({
+                    url:"activity/update.action",
+                    dataType:"json",
+                    type:"post",
+                    data:{
+                        id:"${activity.id}",
+                        owner:$("#edit-marketActivityOwner").val(),
+                        name:$.trim($("#edit-marketActivityName").val()),
+                        startDate: $("#edit-startTime").val(),
+                        endDate: $("#edit-endTime").val(),
+                        cost:$.trim($("#edit-cost").val()),
+                        description: $.trim($("#edit-describe").val())
+                    },
+                    success:function (result_data) {
+                        /*
+                            {success:true/flase,msg}
+                        */
+                        if (result_data.success){
+                            $("#editActivityModal").modal("hide");
+                        }else {
+                            alert(result_data.msg)
+                        }
+                        window.location.href="activity/detail.action?id=${activity.id}";
+                    }
+                })
+            }
+        })
+
+        $("#detail-bj-btn").click(function () {
+            $(".time").datetimepicker({
+                minView: "month",
+                language:  'zh-CN',
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayBtn: true,
+                pickerPosition: "bottom-left"
+            });
+
+            $.ajax({
+                url:"activity/edit.action",
+                data:{
+                    "id":"${activity.id}"
+                },
+                dataType:"json",
+                type:"get",
+                success:function(result_data){
+                    /*
+                        {uList,activity}
+                    */
+                    var html=""
+                    $.each(result_data.uList,function (i,n) {
+                        html+="<option value='"+n.id+"'>"+n.name+"</option>"
+                    })
+                    $("#edit-id").val(result_data.activity.id)
+                    $("#edit-marketActivityName").val(result_data.activity.name)
+                    $("#edit-startTime").val(result_data.activity.startDate)
+                    $("#edit-endTime").val(result_data.activity.endDate)
+                    $("#edit-describe").val(result_data.activity.description)
+                    $("#edit-cost").val(result_data.activity.cost)
+                    $("#edit-marketActivityOwner").html(html)
+                    $("#edit-marketActivityOwner").val(result_data.activity.owner)
+
+                    $("#editActivityModal").modal("show")
+                }
+            })
+        })
+
         $("#saveRemark").click(function () {
 
             $.ajax({
-                url:"activity/saveRemark.do",
+                url:"activity/saveRemark.action",
                 dataType:"json",
                 type:"post",
                 data:{
@@ -74,7 +168,7 @@
                             $("#"+n.id).remove()
                         })
                         $("#remark").val("")
-                        remarkList();
+                        remarkList()
                     }else {
                         alert(result_data.msg)
                     }
@@ -84,7 +178,7 @@
 
         $("#updateRemarkBtn").click(function () {
             $.ajax({
-                url:"activity/updateRemark.do",
+                url:"activity/updateRemark.action",
                 data:{
                     "id":$("#remarkId").val(),
                     "noteContent":$("#noteContent").val()
@@ -111,10 +205,9 @@
 	});
     function deleteRemark(id){
         $.ajax({
-            url: "activity/deleteRemark.do",
+            url: "activity/deleteRemark.action",
             data: {
                 "id":id,
-                "noteContent":$.trim($("#noteContent").val())
             },
             dataType: "json",
             type: "post",
@@ -127,7 +220,6 @@
             }
         })
     }
-
     function editRemark(id){
         $("#editRemarkModal").modal("show")
         $("#noteContent").val($("#edit"+id).html())
@@ -135,7 +227,7 @@
     }
     function remarkList(){
         $.ajax({
-            url:"activity/remarkList.do",
+            url:"activity/remarkList.action",
             data:{
                 "activityId":"${activity.id}"
             },
@@ -161,7 +253,7 @@
             }
         })
     }
-	
+
 </script>
 
 </head>
@@ -215,39 +307,38 @@
                             <label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-marketActivityOwner">
-                                    <option>zhangsan</option>
-                                    <option>lisi</option>
-                                    <option>wangwu</option>
+
                                 </select>
                             </div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                                <input type="hidden" id="edit-id"/>
+                                <input type="text" class="form-control" id="edit-marketActivityName">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+                                <input type="text" class="form-control time" id="edit-startTime"  readonly>
                             </div>
                             <label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+                                <input type="text" class="form-control time" id="edit-endTime" readonly>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="edit-cost" class="col-sm-2 control-label">成本</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-cost" value="5,000">
+                                <input type="text" class="form-control" id="edit-cost">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="edit-describe" class="col-sm-2 control-label">描述</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+                                <textarea class="form-control" rows="3" id="edit-describe"></textarea>
                             </div>
                         </div>
 
@@ -256,7 +347,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                    <button type="button" id="detail-gx-btn" class="btn btn-primary" data-dismiss="modal">更新</button>
                 </div>
             </div>
         </div>
@@ -273,8 +364,8 @@
 			<h3>市场活动-${activity.name} <small>${activity.startDate} ~ ${activity.endDate}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 250px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+            <button type="button" id="detail-bj-btn" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
+			<button type="button" id="detail-sc-btn" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 		</div>
 	</div>
 	
