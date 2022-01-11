@@ -125,7 +125,7 @@ pageEncoding="UTF-8"%>
 			$("#hidden-startTime").val($.trim($("#startTime").val()));
 			$("#hidden-owner").val($.trim($("#getActOwner").val()));
 			$("#hidden-name").val($.trim($("#getActName").val()));
-			pageList(1,3);
+			pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
 		})
 
 		$("#deletebtn").click(function () {
@@ -201,7 +201,7 @@ pageEncoding="UTF-8"%>
 			}
 		})
 
-		$("#updatebtn").click(function () {
+		$("#update-btn").click(function () {
 			if (confirm("确定更新？")){
 				$.ajax({
 					url:"activity/update.action",
@@ -439,7 +439,7 @@ pageEncoding="UTF-8"%>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" id="updatebtn">更新</button>
+					<button type="button" class="btn btn-primary" id="update-btn">更新</button>
 				</div>
 			</div>
 		</div>

@@ -10,7 +10,21 @@ public class ClueRemark {
 	private String editTime;
 	private String editFlag;
 	private String clueId;
-	
+
+	@Override
+	public String toString() {
+		return "ClueRemark{" +
+				"id='" + id + '\'' +
+				", noteContent='" + noteContent + '\'' +
+				", createBy='" + createBy + '\'' +
+				", createTime='" + createTime + '\'' +
+				", editBy='" + editBy + '\'' +
+				", editTime='" + editTime + '\'' +
+				", editFlag='" + editFlag + '\'' +
+				", clueId='" + clueId + '\'' +
+				'}';
+	}
+
 	public String getId() {
 		return id;
 	}

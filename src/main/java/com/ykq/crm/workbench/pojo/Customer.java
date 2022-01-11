@@ -1,6 +1,6 @@
 package com.ykq.crm.workbench.pojo;
 
-public class Customer {
+public class Customer {//客户实体类
 	
 	private String id;
 	private String owner;

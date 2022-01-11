@@ -153,27 +153,30 @@
         })
 
         $("#saveRemark").click(function () {
-
-            $.ajax({
-                url:"activity/saveRemark.action",
-                dataType:"json",
-                type:"post",
-                data:{
-                    "remark":$.trim($("#remark").val()),
-                    "activityId":"${activity.id}"
-                },
-                success:function (result_data) {
-                    if (result_data.success){
-                        $.each(result_data.ar,function (i,n) {
-                            $("#"+n.id).remove()
-                        })
-                        $("#remark").val("")
-                        remarkList()
-                    }else {
-                        alert(result_data.msg)
+            if ($.trim($("#remark").val()).length>0){
+                $.ajax({
+                    url:"activity/saveRemark.action",
+                    dataType:"json",
+                    type:"post",
+                    data:{
+                        "remark":$.trim($("#remark").val()),
+                        "activityId":"${activity.id}"
+                    },
+                    success:function (result_data) {
+                        if (result_data.success){
+                            $.each(result_data.ar,function (i,n) {
+                                $("#"+n.id).remove()
+                            })
+                            $("#remark").val("")
+                            remarkList()
+                        }else {
+                            alert(result_data.msg)
+                        }
                     }
-                }
-            })
+                })
+            }else {
+                alert("请输入需要保存的内容")
+            }
         })
 
         $("#updateRemarkBtn").click(function () {
