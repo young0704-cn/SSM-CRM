@@ -54,7 +54,7 @@ pageEncoding="UTF-8"%>
 			if (event.keyCode===13){
 				if ($.trim($("#aname").val()).length!==0){
 					$.ajax({
-						url:"clue/activityList.do",
+						url:"clue/activityList.action",
 						type:"get",
 						dataType:"json",
 						data:{
@@ -86,8 +86,12 @@ pageEncoding="UTF-8"%>
 			if ($("#isCreateTransaction").prop("checked")){//勾选√为客户创建交易单选框
 				$("#trade-form").submit();
 			}else {
-				window.location.href="clue/convert.do?clueId=${param.id}&flg=0"
+				window.location.href="clue/convert.action?clueId="+$("#hidden-clueId").val()+"&flg=0&activityId="
 			}
+		})
+
+		$("#qx-btn").click(function () {
+			window.location.href="clue/detail.action?id="+$("#hidden-clueId").val()
 		})
 	});
 </script>
@@ -125,20 +129,7 @@ pageEncoding="UTF-8"%>
 							</tr>
 						</thead>
 						<tbody id="activity-list-tbody">
-<%--							<tr>--%>
-<%--								<td><input type="radio" name="activity"/></td>--%>
-<%--								<td>发传单</td>--%>
-<%--								<td>2020-10-10</td>--%>
-<%--								<td>2020-10-20</td>--%>
-<%--								<td>zhangsan</td>--%>
-<%--							</tr>--%>
-<%--							<tr>--%>
-<%--								<td><input type="radio" name="activity"/></td>--%>
-<%--								<td>发传单</td>--%>
-<%--								<td>2020-10-10</td>--%>
-<%--								<td>2020-10-20</td>--%>
-<%--								<td>zhangsan</td>--%>
-<%--							</tr>--%>
+
 						</tbody>
 					</table>
 				</div>
@@ -163,8 +154,8 @@ pageEncoding="UTF-8"%>
 		为客户创建交易
 	</div>
 	<div id="create-transaction2" style="position: relative; left: 40px; top: 20px; width: 80%; background-color: #F7F7F7; display: none;" >
-	
-		<form id="trade-form" action="clue/convert.do" method="post">
+
+		<form id="trade-form" action="clue/convert.action" method="post">
 			<input type="hidden" id="hidden-activityId" name="activityId"/>
 			<input type="hidden" id="hidden-clueId" name="clueId" value="${param.id}">
 			<input type="hidden" id="hidden-flg" name="flg" value="1">
@@ -204,7 +195,7 @@ pageEncoding="UTF-8"%>
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
 		<input class="btn btn-primary" id="convert-btn" type="button" value="转换">
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="btn btn-default" type="button" value="取消">
+		<input class="btn btn-default" type="button" id="qx-btn" value="取消">
 	</div>
 </body>
 </html>

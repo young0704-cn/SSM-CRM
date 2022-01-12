@@ -168,7 +168,7 @@ pageEncoding="UTF-8"%>
                             */
 							if (result_data.success){
 								alert("删除成功")
-								pageList(1,4)
+								pageList(1,$("#cluePage").bs_pagination('getOption', 'rowsPerPage'));
 							}else {
 								alert(result_data.msg)
 							}
@@ -207,6 +207,21 @@ pageEncoding="UTF-8"%>
 				success:function (result_data) {
 					//{success:true/false}
 					if (result_data.success){
+						$("#create-job").val("")
+						$("#create-owner").val("")
+						$("#create-mphone").val("")
+						$("#create-state").val("")
+						$("#create-source").val("")
+						$("#create-description").val("")
+						$("#create-contactSummary").val("")
+						$("#create-nextContactTime").val("")
+						$("#create-company").val("")
+						$("#create-appellation").val("")
+						$("#create-fullname").val("")
+						$("#create-email").val("")
+						$("#create-phone").val("")
+						$("#create-website").val("")
+						$("#create-address").val("")
 						$("#createClueModal").modal("hide")
 					}else {
 						alert("保存失败")

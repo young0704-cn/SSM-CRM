@@ -271,6 +271,29 @@ pageEncoding="UTF-8"%>
 				}
 			})
 		})
+        $("#deletebtn").click(function () {
+            if (confirm("确认删除此线索？")){
+                $.ajax({
+                    url:"clue/delete.action",
+                    data: {
+                        ids:$("#clueId").val()
+                    },
+                    dataType:"json",
+                    type:"post",
+                    success:function (result_data) {
+                        /*
+                            {"success":true/false,"msg":String s}
+                        */
+                        if (result_data.success){
+                            alert("删除成功")
+                            window.location.href="workbench/clue/index.jsp"
+                        }else {
+                            alert(result_data.msg)
+                        }
+                    }
+                })
+            }
+        })
 		showActivityList();
 	});
 	function showActivityList(){
@@ -426,20 +449,6 @@ pageEncoding="UTF-8"%>
 							</tr>
 						</thead>
 						<tbody id="activityList-body">
-<%--							<tr>--%>
-<%--								<td><input type="checkbox"/></td>--%>
-<%--								<td>发传单</td>--%>
-<%--								<td>2020-10-10</td>--%>
-<%--								<td>2020-10-20</td>--%>
-<%--								<td>zhangsan</td>--%>
-<%--							</tr>--%>
-<%--							<tr>--%>
-<%--								<td><input type="checkbox"/></td>--%>
-<%--								<td>发传单</td>--%>
-<%--								<td>2020-10-10</td>--%>
-<%--								<td>2020-10-20</td>--%>
-<%--								<td>zhangsan</td>--%>
-<%--							</tr>--%>
 						</tbody>
 					</table>
 				</div>
@@ -631,9 +640,9 @@ pageEncoding="UTF-8"%>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
 			<input type="hidden" id="clueId" value="${clue.id}">
-			<button type="button" class="btn btn-default" onclick="window.location.href='convert.jsp';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
+			<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.jsp?id=${clue.id}&fullname=${clue.fullname}&appellation=${clue.appellation}&company=${clue.company}&owner=${clue.owner}';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
 			<button type="button" id="edit-btn" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+			<button type="button" id="deletebtn" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 		</div>
 	</div>
 	
